@@ -1,6 +1,7 @@
 package com.codepath.bestsellerlistapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,14 @@ import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.codepath.bestsellerlistapp.R
+import okhttp3.Headers
 
 // --------------------------------//
 // CHANGE THIS TO BE YOUR API KEY  //
 // --------------------------------//
-private const val API_KEY = "<YOUR-API-KEY-HERE>"
+private const val API_KEY = "3W6sEVXnRHKIEiqzWMjQMIHnGiSdPNcg"
 
 /*
  * The class for the only fragment in the app, which contains the progress bar,
@@ -46,10 +49,15 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
         progressBar.show()
 
         // Create and set up an AsyncHTTPClient() here
+        val client = com.codepath.asynchttpclient.AsyncHttpClient()
+        val params = com.codepath.asynchttpclient.RequestParams()
+        params["api-key"] = API_KEY
 
         // Using the client, perform the HTTP request
-
-        /* Uncomment me once you complete the above sections!
+        client[
+                "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json",
+                params,
+                object : com.codepath.asynchttpclient.callback.JsonHttpResponseHandler()
         {
             /*
              * The onSuccess function gets called when
@@ -65,8 +73,8 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
 
                 //TODO - Parse JSON into Models
 
-                val models : List<BestSellerBook> = null // Fix me!
-                recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
+//                val models : List<BestSellerBook> = null // Fix me!
+//                recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
 
                 // Look for this in Logcat:
                 Log.d("BestSellerBooksFragment", "response successful")
@@ -91,7 +99,7 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
                 }
             }
         }]
-        */
+
 
     }
 
