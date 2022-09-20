@@ -1,5 +1,6 @@
 package com.codepath.bestsellerlistapp
 
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +13,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.codepath.bestsellerlistapp.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
+import org.json.JSONObject
 
 // --------------------------------//
 // CHANGE THIS TO BE YOUR API KEY  //
@@ -72,9 +76,14 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
                 progressBar.hide()
 
                 //TODO - Parse JSON into Models
+                val resultsJSON : JSONObject = json.jsonObject.get("results") as JSONObject
+                val booksRawJSON : String = resultsJSON.get("books").toString()
 
-//                val models : List<BestSellerBook> = null // Fix me!
-//                recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
+                val gson = Gson()
+                val arrayBookType = object : TypeToken<List<BestSellerBook>>() {}.type
+
+                val models : List<BestSellerBook> = gson.fromJson(booksRawJSON, arrayBookType)
+                recyclerView.adapter = BestSellerBooksRecyclerViewAdapter(models, this@BestSellerBooksFragment)
 
                 // Look for this in Logcat:
                 Log.d("BestSellerBooksFragment", "response successful")
@@ -109,5 +118,9 @@ class BestSellerBooksFragment : Fragment(), OnListFragmentInteractionListener {
     override fun onItemClick(item: BestSellerBook) {
         Toast.makeText(context, "test: " + item.title, Toast.LENGTH_LONG).show()
     }
+
+}
+
+private fun <T> Any.fromJson(t: T, arrayBookType: T) {
 
 }
